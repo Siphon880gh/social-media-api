@@ -11,11 +11,16 @@ var { User, Thought, Reaction } = require("../models");
  */
 
 // http://localhost:3001/api/test
+
+router.get('/', (req, res) => {
+    res.json({ reached: true });
+})
 router.get("/test", async function(req, res) {
 
-    await User.create({ username: "test2" }).then(() => {})
-        // await User.save(() => {}); // probably not
+    // await User.create({ username: "test2" }).then(() => {})
+    // await User.save(() => {}); // probably not
     await User.find({})
+        .populate("thoughts", "friends")
         .then(dbUserData => res.json(dbUserData))
         .catch(err => {
             console.log(err);

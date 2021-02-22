@@ -1,0 +1,38 @@
+
+> 18-nosql@1.0.0 test /Users/wff/Server/htdocs/ucla/18-nosql-mongodb-indexeddb/social-media-api
+> jest
+
+  console.log
+      ● Test suite failed to run
+    
+        Returning a Promise from "describe" is not supported. Tests must be defined synchronously.
+        Returning a value from "describe" will fail the test in a future version of Jest.
+    
+           8 | });
+           9 |
+        > 10 | describe("Test User", async() => {
+             | ^
+          11 |     test("Testing find (all)", async() => {
+          12 |         await User.find({})
+          13 |             .populate("thoughts", "friends");
+    
+          at addSpecsToSuite (node_modules/jest-jasmine2/build/jasmine/Env.js:452:17)
+          at Object.<anonymous> (__test__/gets.test.js:10:1)
+
+      at addSpecsToSuite (node_modules/jest-jasmine2/build/jasmine/Env.js:450:21)
+
+  console.info
+    [0;36mMongoose:[0m users.ensureIndex({ username: [33m1[39m }, { unique: [33mtrue[39m, background: [33mtrue[39m })
+
+      at NativeCollection.Object.<anonymous>.NativeCollection.$print (node_modules/mongoose/lib/drivers/node-mongodb-native/collection.js:265:11)
+
+  console.info
+    [0;36mMongoose:[0m users.find({}, { projection: {} })
+
+      at NativeCollection.Object.<anonymous>.NativeCollection.$print (node_modules/mongoose/lib/drivers/node-mongodb-native/collection.js:265:11)
+
+  console.info
+    [0;36mMongoose:[0m users.ensureIndex({ email: [33m1[39m }, { unique: [33mtrue[39m, background: [33mtrue[39m })
+
+      at NativeCollection.Object.<anonymous>.NativeCollection.$print (node_modules/mongoose/lib/drivers/node-mongodb-native/collection.js:265:11)
+

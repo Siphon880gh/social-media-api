@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 const moment = require('moment');
+const ReactionSchema = require("./Reaction")
 
 // Reactions are subdocuments
 // https://mongoosejs.com/docs/subdocs.html#adding-subdocs-to-arrays
@@ -22,7 +23,9 @@ const ThoughtSchema = new Schema({
         type: String,
         required: true
     },
-    reactions: []
+    reactions: [
+        ReactionSchema
+    ]
 }, {
     toJSON: {
         virtuals: true,
