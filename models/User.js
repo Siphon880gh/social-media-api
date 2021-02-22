@@ -11,7 +11,7 @@ const UserSchema = new Schema({
         type: String,
         required: function() {
             const regexForEmail = /^[a-zA-Z\d_\.-]+@[\da-zA-Z\.-]+\.[a-zA-Z\.]{2,6}$/;
-            return regex.exec(this.email) !== null;
+            return regexForEmail.exec(this.email) !== null;
         },
         unique: true,
         trim: true
@@ -38,6 +38,6 @@ UserSchema.virtual('friendCount').get(function() {
     return this.friends.length;
 });
 
-const User = model('User', UserSchema);
+const User = model('User', UserSchema); // collection will be automatically plural in the database. use singular form.
 
 module.exports = User;
