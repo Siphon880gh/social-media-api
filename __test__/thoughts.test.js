@@ -173,8 +173,8 @@ describe("Test Thoughts", () => {
 
         // testUser's seeded thought is deleted, now left with the sibling thought created in POST test
         // console.log(retRouter);
-        expect(retRouter.username).toBe("testUser");
-        expect(retRouter.thoughts.length).toBe(1);
+        expect(retRouter.user.username).toBe("testUser");
+        expect(retRouter.user.thoughts.length).toBe(1);
     });
 });
 
