@@ -8,8 +8,8 @@ const ReactionSchema = new Schema({
     },
     reactionBody: {
         type: String,
-        required: function() {
-            return this.reactionBody.length <= 200;
+        required: function(reactionBody) {
+            return reactionBody.length <= 200;
         }
     },
     username: {
@@ -19,8 +19,8 @@ const ReactionSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-        get: function() {
-            return moment(this.createdAt).format("m/d/YYYY HH:MM:SS");
+        get: function(createdAt) {
+            return moment(createdAt).format("m/d/YYYY HH:MM:SS");
         }
     }
 }, {

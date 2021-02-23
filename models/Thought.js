@@ -8,15 +8,15 @@ const ReactionSchema = require("./Reaction")
 const ThoughtSchema = new Schema({
     thoughtText: {
         type: String,
-        required: function() {
-            return this.thoughtText.length >= 1 && this.thoughtText.length <= 280;
+        required: function(thoughtText) {
+            return thoughtText.length >= 1 && thoughtText.length <= 280;
         }
     },
     createdAt: {
         type: Date,
         default: Date.now,
-        get: function() {
-            return moment(this.createdAt).format("m/d/YYYY HH:MM:SS");
+        get: function(createdAt) {
+            return moment(createdAt).format("m/d/YYYY HH:MM:SS");
         }
     },
     username: {
