@@ -20,6 +20,15 @@
 
 - [ ] GET a single user by its \_id and populate its thought and friend data
 - [ ] PUT to update a user by its \_id
+    - Test case:
+
+        ```
+        body: 
+        {
+            "email": "testUser@updated-domain.com"
+        }
+        ```
+
 - [ ] DELETE to remove user by its \_id
 
 ### `/api/users/:userId/friends/:friendId`

@@ -30,4 +30,14 @@ router.get("/:userId", async(req, res) => {
     res.json(retUser);
 });
 
+// PUT to update a user by its _id
+router.put("/:userId", async(req, res) => {
+    let retUser = await User.findOneAndUpdate({
+        _id: req.params.userId
+    }, { email: req.body.email }, { new: true }).populate({ path: "thoughts", select: "-__v" }).populate({ path: "friends", select: "-__v" }).select("-__v");
+    res.json(retUser);
+});
+
+
+
 module.exports = router;
