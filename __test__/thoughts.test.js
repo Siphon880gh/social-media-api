@@ -29,7 +29,7 @@ beforeAll(async() => {
     User = context.User;
     Thought = context.Thought;
 
-    // Mock error json
+    // Mock express response
     global.res = {};
     res.status = statusCode => {
         return {
@@ -75,6 +75,44 @@ describe("Test Thoughts", () => {
         expect(retUserTest.thoughts.length).toEqual(1);
         expect(retUserTest.thoughts[0].thoughtText).toEqual("I am thinking of...");
     });
+    test("Testing Thoughts: GET to get all thoughts", async function() {
+
+        let retRouter = await router.get("/api/thoughts", {}, async(req) => {
+            let retThought = await Thought.find({});
+            return res.json(retThought);
+        });
+
+        // There's only one thought from seeds/thoughts.js
+        expect(retRouter.length).toEqual(1);
+    });
+    test("Testing Thoughts: POST to create a new thought (and push the created thought's _id to the associated user's thoughts array field)", async function() {
+
+
+        let retRouter = await router.post("/api/thoughts", {
+            body: {
+                username: "testUser",
+                thoughtText: "I am a sibling thought"
+            }
+        }, async(req) => {
+            // Create a thought
+            // Find the associated user
+            // Update the user by pushing the thought
+            let retThought = await Thought.create({ thoughtText: req.body.thoughtText, username: req.body.username });
+            if (!retThought) {
+                return res.json({ message: "Cannot create thought.", error: 1 })
+            }
+            let newThoughtId = retThought._id;
+            let retUser = await User.findOneAndUpdate({ username: req.body.username }, {
+                $push: { thoughts: newThoughtId }
+            }, { new: true }).populate({ path: "thoughts", select: "-__v" }).populate({ path: "friends", select: "-__v" }).select("-__v");
+
+            return retUser;
+        });
+
+        // There's was one thought from seeds/thoughts.js, but now you added another thought called a sibling thought
+        // console.log({ thoughts: retRouter.thoughts.toString() });
+        expect(retRouter.thoughts.length).toEqual(2);
+    });
     test("Testing Thoughts: GET to get a single thought by its _id", async function() {
 
         // GET to get a single thought by its _id
@@ -108,7 +146,7 @@ describe("Test Thoughts", () => {
         expect(retRouter.thoughtText).toEqual("I am thinking of another...");
         // console.log(jsonObj);
     });
-    test("Testing Thoughts: DELETE to remove user by its _id", async function() {
+    test("Testing Thoughts: DELETE to remove thought by its _id", async function() {
 
         // GET to get a single thought by its _id
         let retRouter = await router.delete("/api/thoughts/:thoughtId", {
@@ -118,14 +156,14 @@ describe("Test Thoughts", () => {
         }, async(req) => {
             let retThought = await Thought.findOneAndDelete({ _id: req.params.thoughtId }).then(async(deletedThought) => {
                 if (!deletedThought)
-                    return res.status(404).json({ message: "No comment with this id" });
+                    return res.status(404).json({ message: "No comment with this id", error: 1 });
                 else {
                     let ownerOfDeletedThought = deletedThought.username;
                     let idOfDeletedThought = deletedThought._id;
                     // console.log({ deletedThought });
                     var cascader = await User.findOneAndUpdate({ username: ownerOfDeletedThought }, {
                         $pull: { thoughts: idOfDeletedThought }
-                    }, { new: true })
+                    }, { new: true }).populate({ path: "thoughts", select: "-__v" }).populate({ path: "friends", select: "-__v" }).select("-__v");
                     return cascader;
                 };
             }); // ^let retThought...
@@ -133,10 +171,10 @@ describe("Test Thoughts", () => {
             return res.json(retThought);
         }); // router DELETE thought by _id
 
-        // testUser's only thought is deleted
+        // testUser's seeded thought is deleted, now left with the sibling thought created in POST test
         // console.log(retRouter);
         expect(retRouter.username).toEqual("testUser");
-        expect(retRouter.thoughts.length).toEqual(0);
+        expect(retRouter.thoughts.length).toEqual(1);
     });
 });
 
