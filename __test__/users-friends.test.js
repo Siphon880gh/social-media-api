@@ -24,31 +24,81 @@ beforeAll(async() => {
     });
 
     // Seed models
-    const seeder = await require("./seed/user");
+    const seeder = await require("./seed/users");
     User = await seeder.seed(User);
 
-    // Mock error json
+    // Mock express response
     global.res = {};
-    res.json = obj => {
-        console.log(obj);
+    res.status = statusCode => {
+        return {
+            json: obj => {
+                return obj;
+            }
+        }
     }
+    res.json = obj => {
+        return obj;
+    }
+
+    /**
+     * Mock routers so once passed in the test later you can refactor into express routers
+     * router.get/post/delete etc receives parameters
+     * @param {string} uri api endpoint. Actual parameter placeholder in the api end point gets ignored.
+     * @param {object} req object with optional key-value pairs such as params and body for mocking purposes
+     * @param {callback} implementation(req) function that can use res.json, req, and expect. Do not pass values, just pass variable name req because it's a dependency injection. The res.json must be in a return statement like `return res.json(..)` so keep that in mind when refactoring into Express routes
+     */
+    global.router = {};
+    let routerMethod = async(uri, req, implementation) => {
+        return implementation.call(null, req);
+    }
+    global.router.get = global.router.post = global.router.delete = global.router.update = global.router.put = routerMethod;
 });
 
 describe("Test User", () => {
     beforeAll(async function() {
 
-        let retUsers = await User.find({})
+        global.retUsers = await User.find({})
             .select("-__v")
             .populate({ path: "thoughts", select: "-__v" })
             .populate({ path: "friends", select: "-__v" });
     })
-    test("Testing users", async function() {
+    test("Testing Users", async function() {
 
         // Test that there are three users and that the most recently inserted is test3 (queue)
         expect(retUsers).toEqual(expect.any(Object));
         expect(retUsers.length).toEqual(3);
         expect(retUsers[0].username).toEqual("testUser");
         // console.log({ retUsers });
+    });
+
+    test("Testing Users: GET all users", async function() {
+
+        let retRouter = await router.get("/api/users", {}, async(req) => {
+            let retUsers = await User.find({}).populate({ path: "thoughts", select: "-__v" }).populate({ path: "friends", select: "-__v" }).select("-__v");
+            return res.json(retUsers);
+        });
+
+        // There are three users from seed/users
+        expect(retRouter.length).toEqual(3);
+    });
+    test("Testing Users: POST a new user", async function() {
+
+        let retRouter = await router.post("/api/users", {
+            body: {
+
+                username: "testUserNewByRoute",
+                email: "fake-email-" + Date.now() + "@fake-domain.com"
+            }
+
+        }, async(req) => {
+            // Create new user testUserNewByRoute
+            let retUser = await User.create({ username: req.body.username, email: req.body.email }).then(newUser => newUser);
+            return res.json(retUser);
+        });
+
+        // The new user is added
+        // console.log({ retRouter });
+        expect(retRouter.username).toBe("testUserNewByRoute");
     });
     test("Testing delete user", async function() {
 
@@ -59,7 +109,7 @@ describe("Test User", () => {
         let deletingUser = await User.findOneAndDelete({ username: "testUser3" });
         if (!deletingUser) res.json({ error: "Account not found. Likely account terminated before deleting it. Likely the user terminated their own account or another administrator deleted the account already." });
         retUsers = await User.find({});
-        expect(retUsers.length).toEqual(2);
+        expect(retUsers.length).toEqual(3);
         // console.log({ retUsers });
     });
 });
@@ -92,8 +142,8 @@ describe("Test Friend", () => {
         if (!addingFriendToUser) res.json({ error: "Account not found. It's likely deleted before you can request friendship. Likely the user terminated their own account or the administrator did because of a terms of service violation." });
 
         // // Test that the user has a new friend
+        // console.log({ himAndHisFriend: JSON.stringify(himAndHisFriend) });
         let himAndHisFriend = await User.findOneAndUpdate({ username: "testUser" });
-        console.log({ himAndHisFriend: JSON.stringify(himAndHisFriend) });
     });
 });
 

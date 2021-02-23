@@ -47,7 +47,7 @@ beforeAll(async() => {
      * router.get/post/delete etc receives parameters
      * @param {string} uri api endpoint. Actual parameter placeholder in the api end point gets ignored.
      * @param {object} req object with optional key-value pairs such as params and body for mocking purposes
-     * @param {callback} implementation(req) function that can use res.json, req, and expect. Do not pass values, just pass variable name req because it's a dependency injection. The res.json must be in a return statement like `return res.json(..)` so keep that in mind when refactoring into Handlebars Express routes
+     * @param {callback} implementation(req) function that can use res.json, req, and expect. Do not pass values, just pass variable name req because it's a dependency injection. The res.json must be in a return statement like `return res.json(..)` so keep that in mind when refactoring into Express routes
      */
     global.router = {};
     let routerMethod = async(uri, req, implementation) => {
@@ -128,10 +128,10 @@ describe("Test Thoughts", () => {
         expect(retRouter.thoughtText).toEqual("I am thinking of...");
         // console.log(jsonObj);
     });
-    test("Testing Thoughts: DELETE to remove a thought by its _id", async function() {
+    test("Testing Thoughts: PUT to update a thought by its _id", async function() {
 
         // GET to get a single thought by its _id
-        let retRouter = await router.delete("/api/thoughts/:thoughtId", {
+        let retRouter = await router.put("/api/thoughts/:thoughtId", {
             params: {
                 thoughtId
             },
@@ -154,7 +154,7 @@ describe("Test Thoughts", () => {
                 thoughtId
             }
         }, async(req) => {
-            let retThought = await Thought.findOneAndDelete({ _id: req.params.thoughtId }).then(async(deletedThought) => {
+            let retUserAndThought = await Thought.findOneAndDelete({ _id: req.params.thoughtId }).then(async(deletedThought) => {
                 if (!deletedThought)
                     return res.status(404).json({ message: "No comment with this id", error: 1 });
                 else {
@@ -168,7 +168,7 @@ describe("Test Thoughts", () => {
                 };
             }); // ^let retThought...
 
-            return res.json(retThought);
+            return res.json({ message: "Comment deleted and comment also deleted from associated user", user: retUserAndThought });
         }); // router DELETE thought by _id
 
         // testUser's seeded thought is deleted, now left with the sibling thought created in POST test
