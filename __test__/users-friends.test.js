@@ -37,7 +37,7 @@ beforeAll(async() => {
 describe("Test User", () => {
     beforeAll(async function() {
 
-        retUsers = await User.find({})
+        let retUsers = await User.find({})
             .select("-__v")
             .populate({ path: "thoughts", select: "-__v" })
             .populate({ path: "friends", select: "-__v" });
@@ -57,7 +57,7 @@ describe("Test User", () => {
         // Using findOneAndDelete, then the resolved data is the row that's deleted
         expect(retUsers.length).toEqual(3);
         let deletingUser = await User.findOneAndDelete({ username: "testUser3" });
-        if (!deletingUser) res.json({ error: "Account terminated before deleting it. Likely the user terminated their own account or another administrator deleted the account already." });
+        if (!deletingUser) res.json({ error: "Account not found. Likely account terminated before deleting it. Likely the user terminated their own account or another administrator deleted the account already." });
         retUsers = await User.find({});
         expect(retUsers.length).toEqual(2);
         // console.log({ retUsers });
@@ -72,11 +72,11 @@ describe("Test Friend", () => {
             .populate({ path: "thoughts", select: "-__v" })
             .populate({ path: "friends", select: "-__v" });
     })
-    test("Testing friends", async function() {
+    test("Testing Friends", async function() {
 
         // Get ID
         let requestingUser = await User.findOne({ username: "testUser" });
-        if (!requestingUser) res.json({ error: "Your account terminated before requesting a friendship. Likely you violated a terms of service. Please contact the administrator with your username." });
+        if (!requestingUser) res.json({ error: "Account not found. Likely your account terminated before requesting a friendship. Likely you violated a terms of service. Please contact the administrator with your username." });
         let newFriendId = requestingUser._id;
 
         // See if is a valid object Id
@@ -89,7 +89,7 @@ describe("Test Friend", () => {
         let addingFriendToUser = await User.findOneAndUpdate({ username: "testUser" }, {
             $push: { friends: newFriendId }
         })
-        if (!addingFriendToUser) res.json({ error: "Account deleted before you can request friendship. Likely the user terminated their own account or the administrator did because of a terms of service violation." });
+        if (!addingFriendToUser) res.json({ error: "Account not found. It's likely deleted before you can request friendship. Likely the user terminated their own account or the administrator did because of a terms of service violation." });
 
         // // Test that the user has a new friend
         let himAndHisFriend = await User.findOneAndUpdate({ username: "testUser" });
