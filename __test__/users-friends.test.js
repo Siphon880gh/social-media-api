@@ -66,13 +66,14 @@ describe("Test User", () => {
         global.userId = retUsers[0]._id;
         global.friendlyUserId = retUsers[1]._id;
         global.forgetablePersonUserId = retUsers[2]._id; // to test deleting
+        // console.dir({ a: global.userId, b: global.friendlyUserId, c: global.forgetablePersonUserId })
     })
     test("Testing Users", async function() {
 
         // Test that there are three users and that the most recently inserted is test3 (queue)
         expect(retUsers).toEqual(expect.any(Object));
-        expect(retUsers.length).toEqual(3);
-        expect(retUsers[0].username).toEqual("testUser");
+        expect(retUsers.length).toBe(3);
+        expect(retUsers[0].username).toBe("testUser");
         // console.log({ retUsers });
     });
 
@@ -84,7 +85,7 @@ describe("Test User", () => {
         });
 
         // There are three users from seed/users
-        expect(retRouter.length).toEqual(3);
+        expect(retRouter.length).toBe(3);
     });
     test("Testing Users: POST a new user", async function() {
 
@@ -119,7 +120,7 @@ describe("Test User", () => {
         });
 
         // Expect to get back the first seeded username from seed/users.js
-        expect(retRouter.username).toEqual("testUser");
+        expect(retRouter.username).toBe("testUser");
     });
     test("Testing Users: PUT to update a user by its _id", async function() {
 
@@ -138,8 +139,8 @@ describe("Test User", () => {
         });
 
         // Expect testUser's email to be updated
-        expect(retRouter.username).toEqual("testUser");
-        expect(retRouter.email).toEqual("testUser@updated-domain.com");
+        expect(retRouter.username).toBe("testUser");
+        expect(retRouter.email).toBe("testUser@updated-domain.com");
     });
     test("Testing Users: DELETE to remove user by its _id", async function() {
 
@@ -155,7 +156,8 @@ describe("Test User", () => {
         });
 
         // Removed forgetable person testUser3 from seed/users
-        console.log({ ret: retRouter });
+        expect(retRouter.user.username).toBe("testUser3");
+        // console.log({ ret: retRouter });
     });
 });
 
@@ -166,29 +168,42 @@ describe("Test Friend", () => {
             .select("-__v")
             .populate({ path: "thoughts", select: "-__v" })
             .populate({ path: "friends", select: "-__v" });
-    })
-    test("Testing Friends", async function() {
+    });
+    test("Testing Users: POST to add a new friend to a user's friend list", async function() {
 
-        // Get ID
-        let requestingUser = await User.findOne({ username: "testUser" });
-        if (!requestingUser) res.json({ error: "Account not found. Likely your account terminated before requesting a friendship. Likely you violated a terms of service. Please contact the administrator with your username." });
-        let newFriendId = requestingUser._id;
+        let retRouter = await router.post("/api/users/:userId/friends/:friendId", {
+            params: {
+                userId: global.userId,
+                friendId: global.friendlyUserId
+            }
+        }, async(req) => {
+            let retUser = await User.findOneAndUpdate({ _id: req.params.userId }, { $push: { friends: req.params.friendId } }, { new: true }).populate({ path: "thoughts", select: "-__v" }).populate({ path: "friends", select: "-__v" }).select("-__v");
 
-        // See if is a valid object Id
-        // expect(Types.ObjectId.isValid(newFriendId)).toEqual(true);
+            return res.json(retUser);
+        });
 
-        // See if is a valid object Id: This also works
-        // If a string is ObjectId, casting it to ObjectId will not change the string
-        expect(newFriendId).toEqual(Types.ObjectId(newFriendId));
+        // The new friend is added
+        expect(retRouter.username).toBe("testUser");
+        expect(retRouter.friends[0].username).toBe("testUser2");
+    });
 
-        let addingFriendToUser = await User.findOneAndUpdate({ username: "testUser" }, {
-            $push: { friends: newFriendId }
-        })
-        if (!addingFriendToUser) res.json({ error: "Account not found. It's likely deleted before you can request friendship. Likely the user terminated their own account or the administrator did because of a terms of service violation." });
 
-        // // Test that the user has a new friend
-        // console.log({ himAndHisFriend: JSON.stringify(himAndHisFriend) });
-        let himAndHisFriend = await User.findOneAndUpdate({ username: "testUser" });
+    test("Testing Users: DELETE to remove a friend from a user's friend list", async function() {
+
+        let retRouter = await router.post("/api/users/:userId/friends/:friendId", {
+            params: {
+                userId: global.userId,
+                friendId: global.friendlyUserId
+            }
+        }, async(req) => {
+            let retUser = await User.findOneAndUpdate({ _id: req.params.userId }, { $pull: { friends: req.params.friendId } }, { new: true }).populate({ path: "thoughts", select: "-__v" }).populate({ path: "friends", select: "-__v" }).select("-__v");
+
+            return res.json(retUser);
+        });
+
+        // The new friend is removed. The user has no friends now
+        expect(retRouter.username).toBe("testUser");
+        expect(retRouter.friends.length).toBe(0);
     });
 });
 
