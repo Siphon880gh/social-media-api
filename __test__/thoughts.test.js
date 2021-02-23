@@ -179,8 +179,5 @@ describe("Test Thoughts", () => {
 });
 
 afterAll(async() => {
-    // setTimeout(() => {
-
     mongoose.disconnect();
-    // }, 1000);
 })
