@@ -82,7 +82,7 @@ describe("Test Thoughts", () => {
             return res.json(retThought);
         });
 
-        // There's only one thought from seeds/thoughts.js
+        // There's only one thought from seed/thoughts.js
         expect(retRouter.length).toEqual(1);
     });
     test("Testing Thoughts: POST to create a new thought (and push the created thought's _id to the associated user's thoughts array field)", async function() {
@@ -109,7 +109,7 @@ describe("Test Thoughts", () => {
             return retUser;
         });
 
-        // There's was one thought from seeds/thoughts.js, but now you added another thought called a sibling thought
+        // There's was one thought from seed/thoughts.js, but now you added another thought called a sibling thought
         // console.log({ thoughts: retRouter.thoughts.toString() });
         expect(retRouter.thoughts.length).toEqual(2);
     });

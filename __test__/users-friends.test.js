@@ -61,6 +61,11 @@ describe("Test User", () => {
             .select("-__v")
             .populate({ path: "thoughts", select: "-__v" })
             .populate({ path: "friends", select: "-__v" });
+
+        // For testing routes
+        global.userId = retUsers[0]._id;
+        global.friendlyUserId = retUsers[1]._id;
+        global.forgetablePersonUserId = retUsers[2]._id; // to test deleting
     })
     test("Testing Users", async function() {
 
@@ -100,17 +105,57 @@ describe("Test User", () => {
         // console.log({ retRouter });
         expect(retRouter.username).toBe("testUserNewByRoute");
     });
-    test("Testing delete user", async function() {
+    test("Testing Users: GET a single user by its _id and populate its thought and friend data", async function() {
 
-        // Test that you can delete a user and the length goes from 3 to 2
-        // If you had used deleteOne, then the resolved data is { deleteUserInfo: { n: 1, ok: 1, deletedCount: 1 } }
-        // Using findOneAndDelete, then the resolved data is the row that's deleted
-        expect(retUsers.length).toEqual(3);
-        let deletingUser = await User.findOneAndDelete({ username: "testUser3" });
-        if (!deletingUser) res.json({ error: "Account not found. Likely account terminated before deleting it. Likely the user terminated their own account or another administrator deleted the account already." });
-        retUsers = await User.find({});
-        expect(retUsers.length).toEqual(3);
-        // console.log({ retUsers });
+        let retRouter = await router.get("/api/users:userId", {
+            params: {
+                userId: global.userId
+            }
+        }, async(req) => {
+            let retUser = await User.findOne({
+                _id: req.params.userId
+            }).populate({ path: "thoughts", select: "-__v" }).populate({ path: "friends", select: "-__v" }).select("-__v");
+            return res.json(retUser);
+        });
+
+        // Expect to get back the first seeded username from seed/users.js
+        expect(retRouter.username).toEqual("testUser");
+    });
+    test("Testing Users: PUT to update a user by its _id", async function() {
+
+        let retRouter = await router.put("/api/users:userId", {
+            params: {
+                userId: global.userId
+            },
+            body: {
+                email: "testUser@updated-domain.com"
+            }
+        }, async(req) => {
+            let retUser = await User.findOneAndUpdate({
+                _id: req.params.userId
+            }, { email: req.body.email }, { new: true }).populate({ path: "thoughts", select: "-__v" }).populate({ path: "friends", select: "-__v" }).select("-__v");
+            return res.json(retUser);
+        });
+
+        // Expect testUser's email to be updated
+        expect(retRouter.username).toEqual("testUser");
+        expect(retRouter.email).toEqual("testUser@updated-domain.com");
+    });
+    test("Testing Users: DELETE to remove user by its _id", async function() {
+
+        let retRouter = await router.delete("/api/users:userId", {
+            params: {
+                userId: global.forgetablePersonUserId
+            }
+        }, async(req) => {
+            let retUser = await User.findOneAndDelete({
+                _id: req.params.userId
+            }).select("-__v");
+            return res.json({ message: "Deleted user", user: retUser });
+        });
+
+        // Removed forgetable person testUser3 from seed/users
+        console.log({ ret: retRouter });
     });
 });
 
