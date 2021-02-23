@@ -178,6 +178,68 @@ describe("Test Thoughts", () => {
     });
 });
 
+describe("Test Reactions", () => {
+    beforeAll(async function() {
+
+        // For testing routes
+        global.thoughtId = await Thought.findOne({});
+
+    });
+    test("Testing Reactions: POST to create a reaction stored in a single thought's reactions array field", async function() {
+
+        let retRouter = await router.post("/api/thoughts/:thoughtId/reactions", {
+            params: {
+                thoughtId: global.thoughtId,
+            },
+            body: {
+                reactionBody: "I am reacting to your thought",
+            }
+        }, async(req) => {
+            let retThought = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, {
+                $push: {
+                    reactions: {
+                        reactionBody: req.body.reactionBody,
+                        username: req.body.username
+                    }
+                }
+            }, { new: true });
+
+            return res.json(retThought);
+        });
+
+        // A thought is reacted to
+        // console.log({ retRouter });
+        expect(retRouter.reactions.length).toBeGreaterThan(0);
+        global.newReactionId = retRouter.reactions[0].reactionId;
+    });
+    test("Testing Reactions: DELETE to pull and remove a reaction by the reaction's reactionId value", async function() {
+
+        let retRouter = await router.post("/api/thoughts/:thoughtId/reactions", {
+            params: {
+                thoughtId: global.thoughtId,
+            },
+            body: {
+                reactionBody: "I am reacting to your thought",
+            }
+        }, async(req) => {
+            let retThought = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, {
+                $pull: {
+                    reactions: {
+                        reactionId: global.newReactionId
+                    }
+                }
+            }, { new: true });
+
+            return res.json(retThought);
+        });
+
+        // The previous reaction is now removed, so there are no more reactions
+        // console.log({ retRouter });
+        expect(retRouter.reactions.length).toBe(0);
+    });
+
+}); // describe
+
 afterAll(async() => {
     mongoose.disconnect();
 })

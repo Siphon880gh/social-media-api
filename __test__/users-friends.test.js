@@ -161,7 +161,7 @@ describe("Test User", () => {
     });
 });
 
-describe("Test Friend", () => {
+describe("Test Friends", () => {
     beforeAll(async function() {
 
         retUsers = await User.find({})
@@ -169,7 +169,7 @@ describe("Test Friend", () => {
             .populate({ path: "thoughts", select: "-__v" })
             .populate({ path: "friends", select: "-__v" });
     });
-    test("Testing Users: POST to add a new friend to a user's friend list", async function() {
+    test("Testing Friends: POST to add a new friend to a user's friend list", async function() {
 
         let retRouter = await router.post("/api/users/:userId/friends/:friendId", {
             params: {
@@ -187,8 +187,7 @@ describe("Test Friend", () => {
         expect(retRouter.friends[0].username).toBe("testUser2");
     });
 
-
-    test("Testing Users: DELETE to remove a friend from a user's friend list", async function() {
+    test("Testing Friends: DELETE to remove a friend from a user's friend list", async function() {
 
         let retRouter = await router.post("/api/users/:userId/friends/:friendId", {
             params: {
