@@ -10,8 +10,8 @@
         ```
         body: 
         {
-            "username": "testUserNewByRoute",
-            "email": "fake-email-2021-02-23@fake-domain.com"
+            "username": "NEW_USER_FOR_DEMO",
+            "email": "fake-email-20210223@fake-domain.com"
         }
         ```
 

@@ -38,6 +38,13 @@ router.put("/:userId", async(req, res) => {
     res.json(retUser);
 });
 
+// DELETE to remove user by its _id
 
+router.delete("/:userId", async(req, res) => {
+    let retUser = await User.findOneAndDelete({
+        _id: req.params.userId
+    }).select("-__v");
+    return res.json({ message: "Deleted user", user: retUser });
+});
 
 module.exports = router;
