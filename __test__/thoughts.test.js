@@ -72,8 +72,8 @@ describe("Test Thoughts", () => {
     test("Testing Thoughts", async function() {
 
         // console.log({ retUserTest })
-        expect(retUserTest.thoughts.length).toEqual(1);
-        expect(retUserTest.thoughts[0].thoughtText).toEqual("I am thinking of...");
+        expect(retUserTest.thoughts.length).toBe(1);
+        expect(retUserTest.thoughts[0].thoughtText).toBe("I am thinking of...");
     });
     test("Testing Thoughts: GET to get all thoughts", async function() {
 
@@ -83,7 +83,7 @@ describe("Test Thoughts", () => {
         });
 
         // There's only one thought from seed/thoughts.js
-        expect(retRouter.length).toEqual(1);
+        expect(retRouter.length).toBe(1);
     });
     test("Testing Thoughts: POST to create a new thought (and push the created thought's _id to the associated user's thoughts array field)", async function() {
 
@@ -111,7 +111,7 @@ describe("Test Thoughts", () => {
 
         // There's was one thought from seed/thoughts.js, but now you added another thought called a sibling thought
         // console.log({ thoughts: retRouter.thoughts.toString() });
-        expect(retRouter.thoughts.length).toEqual(2);
+        expect(retRouter.thoughts.length).toBe(2);
     });
     test("Testing Thoughts: GET to get a single thought by its _id", async function() {
 
@@ -125,7 +125,7 @@ describe("Test Thoughts", () => {
             return res.json(retThought);
         });
 
-        expect(retRouter.thoughtText).toEqual("I am thinking of...");
+        expect(retRouter.thoughtText).toBe("I am thinking of...");
         // console.log(jsonObj);
     });
     test("Testing Thoughts: PUT to update a thought by its _id", async function() {
@@ -143,7 +143,7 @@ describe("Test Thoughts", () => {
             return res.json(retThought);
         });
 
-        expect(retRouter.thoughtText).toEqual("I am thinking of another...");
+        expect(retRouter.thoughtText).toBe("I am thinking of another...");
         // console.log(jsonObj);
     });
     test("Testing Thoughts: DELETE to remove thought by its _id", async function() {
@@ -173,8 +173,8 @@ describe("Test Thoughts", () => {
 
         // testUser's seeded thought is deleted, now left with the sibling thought created in POST test
         // console.log(retRouter);
-        expect(retRouter.username).toEqual("testUser");
-        expect(retRouter.thoughts.length).toEqual(1);
+        expect(retRouter.username).toBe("testUser");
+        expect(retRouter.thoughts.length).toBe(1);
     });
 });
 
