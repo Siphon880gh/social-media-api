@@ -8,4 +8,15 @@ router.get("/", async(req, res) => {
     res.json(retUsers);
 });
 
+router.post("/", async(req, res) => {
+    // Create new user testUserNewByRoute
+    let retUser = await User.create({ username: req.body.username, email: req.body.email }).catch(err => {
+        if (err.code === 11000) {
+            err = "Unable to create because duplicate key is not allowed"
+        }
+        res.status(500).json({ message: err, error: 1 });
+    })
+    res.json(retUser);
+});
+
 module.exports = router;

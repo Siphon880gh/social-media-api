@@ -5,6 +5,15 @@
 
 - [ ] GET all users
 - [ ] POST a new user
+    - Test case:
+
+        ```
+        body: 
+        {
+            "username": "testUserNewByRoute",
+            "email": "fake-email-2021-02-23@fake-domain.com"
+        }
+        ```
 
 
 ### `/api/users/:userId`
