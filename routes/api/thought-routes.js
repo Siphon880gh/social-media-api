@@ -39,7 +39,27 @@ router.get("/:thoughtId", async(req, res) => {
 // PUT /api/thoughts/:thoughtId
 router.put("/:thoughtId", async(req, res) => {
     let retThought = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, { thoughtText: req.body.thoughtText }, { new: true });
-    return res.json(retThought);
+    res.json(retThought);
 });
+
+// DELETE to remove a thought by its _id
+// DELETE /api/thoughts/:thoughtId
+router.delete("/:thoughtId", async(req, res) => {
+    let retUserAndThought = await Thought.findOneAndDelete({ _id: req.params.thoughtId }).then(async(deletedThought) => {
+        if (!deletedThought)
+            res.status(404).json({ message: "No thought with this id. Did you delete more than once?", error: 1 });
+        else {
+            let ownerOfDeletedThought = deletedThought.username;
+            let idOfDeletedThought = deletedThought._id;
+            // console.log({ deletedThought });
+            var cascader = await User.findOneAndUpdate({ username: ownerOfDeletedThought }, {
+                $pull: { thoughts: idOfDeletedThought }
+            }, { new: true }).populate({ path: "thoughts", select: "-__v" }).populate({ path: "friends", select: "-__v" }).select("-__v");
+            return cascader;
+        };
+    }); // ^let retThought...
+
+    res.json({ message: "Thought deleted and thought also deleted from associated user", user: retUserAndThought });
+}); // router DELETE thought by _id
 
 module.exports = router;

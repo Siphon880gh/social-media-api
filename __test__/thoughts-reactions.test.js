@@ -156,7 +156,7 @@ describe("Test Thoughts", () => {
         }, async(req) => {
             let retUserAndThought = await Thought.findOneAndDelete({ _id: req.params.thoughtId }).then(async(deletedThought) => {
                 if (!deletedThought)
-                    return res.status(404).json({ message: "No comment with this id", error: 1 });
+                    return res.status(404).json({ message: "No thought with this id. Did you delete more than once?", error: 1 });
                 else {
                     let ownerOfDeletedThought = deletedThought.username;
                     let idOfDeletedThought = deletedThought._id;
@@ -168,7 +168,7 @@ describe("Test Thoughts", () => {
                 };
             }); // ^let retThought...
 
-            return res.json({ message: "Comment deleted and comment also deleted from associated user", user: retUserAndThought });
+            return res.json({ message: "Thought deleted and thought also deleted from associated user", user: retUserAndThought });
         }); // router DELETE thought by _id
 
         // testUser's seeded thought is deleted, now left with the sibling thought created in POST test
