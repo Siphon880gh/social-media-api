@@ -28,7 +28,15 @@ Table of Contents
 
 Installation
 ---
-Run `npm install`. You may want to seed some data so you can test out the database by running `npm run seed`. Then you can run the API on localhost with `npm start`. Open an API test tool to "localhost:3001/api/<API_ENDPOINT>" and change the request method to the appropriate one. This can be Insomnia Core or Postman. Look into the [Tests](#tests) section for further instructions. Once you are satisfied, you can adapt this code to your node project.
+1. Run `npm install`. 
+
+2. Open mongod server by running the command `mongod`.
+
+3. You may want to seed some data so you can test out the database by running `npm run seed`. 
+
+4. Now you can run the API on localhost with `npm start`. Open an API test tool to "localhost:3001/api/<API_ENDPOINT>" and change the request method to the appropriate one. This can be Insomnia Core or Postman.
+
+5. Look into the [Tests](#tests) section for further instructions. Once you are satisfied, you can adapt this code to your node project.
 
 Tests
 ---
