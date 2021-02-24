@@ -8,8 +8,8 @@ const ReactionSchema = require("./Reaction")
 const ThoughtSchema = new Schema({
     thoughtText: {
         type: String,
-        required: function(thoughtText) {
-            return thoughtText.length >= 1 && thoughtText.length <= 280;
+        required: function() {
+            return this.thoughtText.length >= 1 && this.thoughtText.length <= 280;
         }
     },
     createdAt: {

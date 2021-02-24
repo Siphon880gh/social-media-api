@@ -8,8 +8,8 @@ const ReactionSchema = new Schema({
     },
     reactionBody: {
         type: String,
-        required: function(reactionBody) {
-            return reactionBody.length <= 200;
+        required: function() {
+            return this.reactionBody.length <= 200;
         }
     },
     username: {

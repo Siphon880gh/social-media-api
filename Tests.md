@@ -40,7 +40,15 @@
 
 - [ ] GET to get all thoughts
 - [ ] POST to create a new thought (and push the created thought's \_id to the associated user's thoughts array field)
+    - Test case:
 
+        ```
+        body: 
+        {
+            "username": "testUser",
+            "thoughtText": "I am a thought"
+        }
+        ```
 
 ### `/api/thoughts/:thoughtId`
 - [ ] GET to get a single thought by its \_id
