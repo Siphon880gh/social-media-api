@@ -29,7 +29,7 @@
         }
         ```
 
-- [ ] DELETE to remove user by its \_id
+- [x] DELETE to remove user by its \_id
 
 ### `/api/users/:userId/friends/:friendId`
 

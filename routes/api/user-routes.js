@@ -47,4 +47,10 @@ router.delete("/:userId", async(req, res) => {
     return res.json({ message: "Deleted user", user: retUser });
 });
 
+// POST to add a new friend to a user's friend list
+router.post("/api/users/:userId/friends/:friendId", async(req, res) => {
+    let retUser = await User.findOneAndUpdate({ _id: req.params.userId }, { $push: { friends: req.params.friendId } }, { new: true }).populate({ path: "thoughts", select: "-__v" }).populate({ path: "friends", select: "-__v" }).select("-__v");
+    res.json(retUser);
+});
+
 module.exports = router;
