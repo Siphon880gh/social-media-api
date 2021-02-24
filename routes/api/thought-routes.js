@@ -62,4 +62,19 @@ router.delete("/:thoughtId", async(req, res) => {
     res.json({ message: "Thought deleted and thought also deleted from associated user", user: retUserAndThought });
 }); // router DELETE thought by _id
 
+// POST to create a reaction stored in a single thought's reactions array field
+// POST /api/thoughts/:thoughtId/reactions
+router.post("/:thoughtId/reactions", async(req, res) => {
+    let retThought = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, {
+        $push: {
+            reactions: {
+                reactionBody: req.body.reactionBody,
+                username: req.body.username
+            }
+        }
+    }, { new: true });
+
+    res.json(retThought);
+});
+
 module.exports = router;

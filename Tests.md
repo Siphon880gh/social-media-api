@@ -65,4 +65,11 @@
 ### `/api/thoughts/:thoughtId/reactions`
 
 - [ ] POST to create a reaction stored in a single thought's reactions array field
+    - Test case:
+
+        ```
+        body: 
+        {
+            "reactionBody": "I am reacting to your thought",
+        }
 - [ ] DELETE to pull and remove a reaction by the reaction's reactionId value
