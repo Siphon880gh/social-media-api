@@ -42,7 +42,7 @@ router.delete("/:userId", async(req, res) => {
     let retUser = await User.findOneAndDelete({
         _id: req.params.userId
     }).select("-__v");
-    return res.json({ message: "Deleted user", user: retUser });
+    res.json({ message: "Deleted user", user: retUser });
 });
 
 // POST to add a new friend to a user's friend list
