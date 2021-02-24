@@ -5,26 +5,14 @@ const connect = require("../config/mongoose.js").start();
 // Models
 const { User, Thought, Reaction } = require("../models");
 
-// const app = express();
-// const PORT = process.env.PORT || 3001;
-
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-// app.use(express.static('public'));
-
-// app.use(require('./routes'));
-
-// app.listen(PORT, () => console.log(`🌍 Connected on localhost:${PORT}`));
-
-
 (async() => {
     // Empty models
-    User.deleteMany({}, (err, result) => {
+    await User.deleteMany({}, (err, result) => {
         if (err) {
             console.log(err);
         }
     });
-    Thought.deleteMany({}, (err, result) => {
+    await Thought.deleteMany({}, (err, result) => {
         if (err) {
             console.log(err);
         }
