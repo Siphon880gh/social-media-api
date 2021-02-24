@@ -35,4 +35,11 @@ router.get("/:thoughtId", async(req, res) => {
     res.json(retThought);
 });
 
+// PUT to update a thought by its _id
+// PUT /api/thoughts/:thoughtId
+router.put("/:thoughtId", async(req, res) => {
+    let retThought = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, { thoughtText: req.body.thoughtText }, { new: true });
+    return res.json(retThought);
+});
+
 module.exports = router;
