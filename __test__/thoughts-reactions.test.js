@@ -130,7 +130,7 @@ describe("Test Thoughts", () => {
     });
     test("Testing Thoughts: PUT to update a thought by its _id", async function() {
 
-        // GET to get a single thought by its _id
+        // PUT to update a thought by its _id
         let retRouter = await router.put("/api/thoughts/:thoughtId", {
             params: {
                 thoughtId

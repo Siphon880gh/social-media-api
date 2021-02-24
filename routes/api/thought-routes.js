@@ -28,4 +28,11 @@ router.post("/", async(req, res) => {
     res.json(retUser)
 });
 
+// GET to get a single thought by its _id
+// GET /api/thoughts/:thoughtId
+router.get("/:thoughtId", async(req, res) => {
+    let retThought = await Thought.findOne({ _id: req.params.thoughtId });
+    res.json(retThought);
+});
+
 module.exports = router;

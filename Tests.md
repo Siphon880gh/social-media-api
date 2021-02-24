@@ -53,6 +53,13 @@
 ### `/api/thoughts/:thoughtId`
 - [ ] GET to get a single thought by its \_id
 - [ ] PUT to update a thought by its \_id
+    - Test case:
+
+        ```
+        body: 
+        {
+            "thoughtText": "I am thinking of another..."
+        }
 - [ ] DELETE to remove a thought by its \_id
 
 ### `/api/thoughts/:thoughtId/reactions`
