@@ -189,7 +189,7 @@ describe("Test Friends", () => {
 
     test("Testing Friends: DELETE to remove a friend from a user's friend list", async function() {
 
-        let retRouter = await router.post("/api/users/:userId/friends/:friendId", {
+        let retRouter = await router.delete("/api/users/:userId/friends/:friendId", {
             params: {
                 userId: global.userId,
                 friendId: global.friendlyUserId

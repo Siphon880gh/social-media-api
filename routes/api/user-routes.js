@@ -39,7 +39,6 @@ router.put("/:userId", async(req, res) => {
 });
 
 // DELETE to remove user by its _id
-
 router.delete("/:userId", async(req, res) => {
     let retUser = await User.findOneAndDelete({
         _id: req.params.userId
@@ -48,9 +47,15 @@ router.delete("/:userId", async(req, res) => {
 });
 
 // POST to add a new friend to a user's friend list
-router.post("/api/users/:userId/friends/:friendId", async(req, res) => {
+router.post("/:userId/friends/:friendId", async(req, res) => {
     let retUser = await User.findOneAndUpdate({ _id: req.params.userId }, { $push: { friends: req.params.friendId } }, { new: true }).populate({ path: "thoughts", select: "-__v" }).populate({ path: "friends", select: "-__v" }).select("-__v");
     res.json(retUser);
+});
+
+// DELETE to remove a friend from a user's friend list
+router.delete("/:userId/friends/:friendId", async(req, res) => {
+    let retUser = await User.findOneAndUpdate({ _id: req.params.userId }, { $pull: { friends: req.params.friendId } }, { new: true }).populate({ path: "thoughts", select: "-__v" }).populate({ path: "friends", select: "-__v" }).select("-__v");
+    return res.json({ message: "Deleted friend and updated the friend list of the associated user", user: retUser });
 });
 
 module.exports = router;
