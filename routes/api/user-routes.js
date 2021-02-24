@@ -14,7 +14,9 @@ router.post("/", async(req, res) => {
     // Create new user testUserNewByRoute
     let retUser = await User.create({ username: req.body.username, email: req.body.email }).catch(err => {
         if (err.code === 11000) {
-            err = "Unable to create because duplicate key is not allowed"
+            var duplicateKey = Object.keys(err.keyValue)[0];
+            var duplicateVal = err.keyValue[duplicateKey];
+            err = `Unable to create because ${duplicateKey} '${duplicateVal}' already taken`;
         }
         res.status(500).json({ message: err, error: 1 });
     })
