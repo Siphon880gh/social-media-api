@@ -29,10 +29,8 @@ const ReactionSchema = new Schema({
         getters: true
     },
     // prevents virtuals from creating duplicate of _id as `id`
-    id: false
+    id: false,
+    _id: false
 });
-
-
-// const Reaction = model('Reaction', ReactionSchema);
 
 module.exports = ReactionSchema;

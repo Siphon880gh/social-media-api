@@ -214,18 +214,16 @@ describe("Test Reactions", () => {
     });
     test("Testing Reactions: DELETE to pull and remove a reaction by the reaction's reactionId value", async function() {
 
-        let retRouter = await router.post("/api/thoughts/:thoughtId/reactions", {
+        let retRouter = await router.post("/api/thoughts/:thoughtId/reactions/:reactionId", {
             params: {
                 thoughtId: global.thoughtId,
-            },
-            body: {
-                reactionBody: "I am reacting to your thought",
+                reactionId: global.newReactionId
             }
         }, async(req) => {
             let retThought = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, {
                 $pull: {
                     reactions: {
-                        reactionId: global.newReactionId
+                        reactionId: req.params.reactionId
                     }
                 }
             }, { new: true });

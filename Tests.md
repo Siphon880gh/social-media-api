@@ -72,4 +72,6 @@
         {
             "reactionBody": "I am reacting to your thought",
         }
+
+### `/api/thoughts/:thoughtId/reactions/:reactionId`
 - [ ] DELETE to pull and remove a reaction by the reaction's reactionId value
