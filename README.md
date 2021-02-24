@@ -7,11 +7,11 @@ Social Media API
 
 Description
 ---
-Social media backend with users, thoughts, and reactions. This is a MongoDB-Mongoose-Node database and restful API routes. Can be incorporated into your React app in a MERN stack.
+By Weng Fei Fung. Social media backend with users, thoughts, and reactions. This is a MongoDB-Mongoose-Node database and restful API routes. Can be incorporated into your React app in a MERN stack.
 
 Video Walkthrough
 ---
-Coming soon
+Watch the [walkthrough](https://www.youtube.com/watch?v=NpPc12I0C4M)
 
 Screenshot
 ---
