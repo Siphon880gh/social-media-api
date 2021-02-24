@@ -2,7 +2,6 @@ var app = require("express");
 var router = app.Router();
 var { User, Thought } = require("../../models");
 
-
 // GET all users
 router.get("/", async(req, res) => {
     let retUsers = await User.find({}).select("-__v").populate({ path: "thoughts", select: "-__v" }).populate({ path: "friends", select: "-__v" });
@@ -55,7 +54,7 @@ router.post("/:userId/friends/:friendId", async(req, res) => {
 // DELETE to remove a friend from a user's friend list
 router.delete("/:userId/friends/:friendId", async(req, res) => {
     let retUser = await User.findOneAndUpdate({ _id: req.params.userId }, { $pull: { friends: req.params.friendId } }, { new: true }).populate({ path: "thoughts", select: "-__v" }).populate({ path: "friends", select: "-__v" }).select("-__v");
-    return res.json({ message: "Deleted friend and updated the friend list of the associated user", user: retUser });
+    res.json({ message: "Deleted friend and updated the friend list of the associated user", user: retUser });
 });
 
 module.exports = router;
